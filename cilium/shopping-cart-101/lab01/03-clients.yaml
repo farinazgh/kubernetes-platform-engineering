@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: storefront
+  namespace: shopping-cart
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      org: commerce
+      class: client
+  template:
+    metadata:
+      labels:
+        org: commerce
+        class: client
+    spec:
+      containers:
+        - name: storefront
+          image: curlimages/curl:8.12.1
+          command: ["sleep", "8640000"]
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: analytics-worker
+  namespace: shopping-cart
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      org: analytics
+      class: client
+  template:
+    metadata:
+      labels:
+        org: analytics
+        class: client
+    spec:
+      containers:
+        - name: analytics-worker
+          image: curlimages/curl:8.12.1
+          command: ["sleep", "8640000"]
