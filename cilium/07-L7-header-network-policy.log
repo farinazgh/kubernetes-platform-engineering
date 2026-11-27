@@ -1,0 +1,29 @@
+# kubectl exec -n shopping-cart deploy/storefront -- curl -sS --max-time 5 -i -X PUT http://cart-api/v1/cart/discount
+# header is missing, so the request is denied by the cart-api service. The request is blocked by the Cilium Network Policy (CCNP) that allows only requests with the correct header to access the /v1/cart/discount endpoint.
+
+HTTP/1.1 403 Forbidden
+content-length: 15
+content-type: text/plain
+date: Fri, 27 Nov 2026 12:44:40 GMT
+server: envoy
+
+Access denied
+
+#wrong header
+# kubectl exec -n shopping-cart deploy/storefront -- curl -sS --max-time 5 -i -X PUT -H "X-Internal-Request: False" http://cart-api/v1/cart/discount
+HTTP/1.1 403 Forbidden
+content-length: 15
+content-type: text/plain
+date: Fri, 27 Nov 2026 12:46:53 GMT
+server: envoy
+
+Access denied
+kubectl exec -n shopping-cart deploy/storefront -- curl -sS --max-time 5 -i -X PUT -H "X-Internal-Request: True" http://cart-api/v1/cart/discount
+HTTP/1.1 200 OK
+server: envoy
+date: Fri, 27 Nov 2026 12:47:23 GMT
+content-type: application/json
+content-length: 135
+x-envoy-upstream-service-time: 4
+
+{"service": "cart-api", "pod": "cart-api-f9775db54-b4d22", "method": "PUT", "path": "/v1/cart/discount", "message": "Discount applied"}root@ip-172-31-39-134:/home/ubuntu/shopping-cart-101#
