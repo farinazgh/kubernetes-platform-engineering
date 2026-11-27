@@ -1,0 +1,29 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: cart-api-access
+  namespace: shopping-cart
+spec:
+  description: "Restrict cart discount operations using HTTP headers"
+  endpointSelector:
+    matchLabels:
+      org: commerce
+      class: cart-api
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            org: commerce
+      toPorts:
+        - ports:
+            - port: "80"
+              protocol: TCP
+          rules:
+            http:
+              - method: "GET"
+                path: "^/v1/cart$"
+              - method: "POST"
+                path: "^/v1/cart/items$"
+              - method: "PUT"
+                path: "^/v1/cart/discount$"
+                headers:
+                  - "X-Internal-Request: True"
