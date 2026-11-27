@@ -23,5 +23,9 @@ kubectl exec -n shopping-cart deploy/storefront -- \
  echo
  done'
 
- # after applying the Cilium NetworkPolicy, the following command  failed with a 403 Forbidden error
+ # after applying the Cilium NetworkPolicy, the following command failed with a 403 Forbidden error
+kubectl exec -n shopping-cart deploy/analytics-worker -- curl --max-time 5 -i http://cart-api/v1/cart
+CART_IP=$(kubectl get pod -n shopping-cart cart-api-f9775db54-b4d22 -o jsonpath='{.status.podIP}')
+kubectl exec -n shopping-cart deploy/storefront -- curl --max-time 5 -i http://$CART_IP:8080
+kubectl exec -n shopping-cart cart-api-f9775db54-b4d22 -- python -m http.server 8080 --bind 0.0.0.0
 kubectl exec -n shopping-cart deploy/analytics-worker -- curl --max-time 5 -i http://cart-api/v1/cart

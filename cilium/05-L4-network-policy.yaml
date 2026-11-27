@@ -1,0 +1,19 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: cart-api-access
+  namespace: shopping-cart
+spec:
+  description: "Allow commerce workloads over TCP port 80 only"
+  endpointSelector:
+    matchLabels:
+      org: commerce
+      class: cart-api
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            org: commerce
+      toPorts:
+        - ports:
+            - port: "80"
+              protocol: TCP
