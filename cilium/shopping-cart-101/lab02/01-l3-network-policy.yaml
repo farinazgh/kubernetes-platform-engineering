@@ -1,0 +1,15 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: cart-api-access
+  namespace: shopping-cart
+spec:
+  description: "Allow only commerce workloads to access the cart API"
+  endpointSelector:
+    matchLabels:
+      org: commerce
+      class: cart-api
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            org: commerce
