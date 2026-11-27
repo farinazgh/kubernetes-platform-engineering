@@ -5,6 +5,7 @@ metadata:
   namespace: shopping-cart
 spec:
   description: "Allow only commerce workloads to access the cart API"
+  # L3 — Network layer: WHO can communicate? (org: commerce)
   endpointSelector:
     matchLabels:
       org: commerce
