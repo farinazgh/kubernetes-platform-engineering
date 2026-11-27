@@ -1,0 +1,21 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: payments-api-l7-only
+  namespace: payments
+spec:
+  endpointSelector:
+    matchLabels:
+      app: payments-api
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app: checkout-service
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP
+          rules:
+            http:
+              - method: "POST"
+                path: "/v1/charges"
